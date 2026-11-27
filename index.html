@@ -116,6 +116,22 @@ header.top .byline{opacity:0;animation:rise 1s .05s ease forwards}
 .tally.on{opacity:1}
 .tally b{font-family:var(--hand);font-style:var(--hand-st);font-weight:400;font-size:calc(24px * var(--hand-k));letter-spacing:0;color:var(--heart);text-transform:none;margin:0 4px}
 
+/* @555tzu: a little vintage oval label, like an antique frame with a beaded border */
+.igbadge{position:relative;display:inline-flex;flex-direction:column;align-items:center;gap:0;padding:10px 34px 12px;margin:0 0 18px;
+  background:radial-gradient(ellipse at 50% 40%,#fbf3ee 0 55%,#f3d9d6 100%);border:2px solid #b87c68;border-radius:50%;
+  outline:2.5px dotted #c99383;outline-offset:4px;color:#3f63a8;text-decoration:none;font-family:var(--hand)!important;
+  box-shadow:0 6px 16px rgba(0,0,0,.28);transform-origin:50% 60%;animation:badgefloat 3.2s ease-in-out infinite;transition:transform .25s}
+.igbadge::before,.igbadge::after{content:"❦";position:absolute;top:50%;font-size:18px;color:#d8b0a3;transform:translateY(-50%)}
+.igbadge::before{left:-22px;transform:translateY(-50%) scaleX(-1)}
+.igbadge::after{right:-22px}
+.igbadge small{font-size:calc(12px * var(--hand-k));letter-spacing:.06em;color:#9c6b5c;line-height:1.1}
+.igbadge span{font-size:calc(27px * var(--hand-k));line-height:1.05;letter-spacing:.01em}
+.igbadge:hover{animation:none;transform:rotate(-3deg) scale(1.08)}
+@keyframes badgefloat{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-4px) rotate(-1.5deg)}}
+@media (prefers-reduced-motion:reduce){.igbadge{animation:none}}
+header.top .igbadge{opacity:0;animation:rise 1s .05s ease forwards,badgefloat 3.2s 1.1s ease-in-out infinite}
+#full .igbadge{margin:6px 0 0}
+
 /* every bit of text uses the handwriting picked in step iii */
 body,button,input,textarea,label,.btn,.eyebrow,.byline,.tally,.note,.count,.sty b,.fnt b,header.top p,.photoRow small,.toast,.env .toName small,.step h2 span{font-family:var(--hand)!important;font-style:var(--hand-st)!important;font-weight:400}
 label,.btn,.eyebrow,.tally,.sty b,.fnt b,.count,.toast,.env .toName small,.byline{text-transform:none;letter-spacing:.03em}
@@ -185,7 +201,7 @@ header.top p.sub{font-size:calc(19px * var(--hand-k))}
       <svg class="bf" style="--x:84%;--y:8%;--d:21s;--o:-6s" viewBox="-12 -10 24 20"><g class="wl"><path d="M0 0C-3-8-11-9-10-3C-9 1-4 1 0 0C-4 2-8 6-5 8C-2 9 0 4 0 0Z"/></g><g transform="scale(-1 1)"><g class="wl"><path d="M0 0C-3-8-11-9-10-3C-9 1-4 1 0 0C-4 2-8 6-5 8C-2 9 0 4 0 0Z"/></g></g><path d="M0-3V5"/></svg>
       <svg class="bf sm" style="--x:91%;--y:52%;--d:19s;--o:-11s" viewBox="-12 -10 24 20"><g class="wl"><path d="M0 0C-3-8-11-9-10-3C-9 1-4 1 0 0C-4 2-8 6-5 8C-2 9 0 4 0 0Z"/></g><g transform="scale(-1 1)"><g class="wl"><path d="M0 0C-3-8-11-9-10-3C-9 1-4 1 0 0C-4 2-8 6-5 8C-2 9 0 4 0 0Z"/></g></g><path d="M0-3V5"/></svg>
     </div>
-    <a class="byline" href="https://www.instagram.com/555tzu/" target="_blank" rel="noopener">by roxanne · @555tzu</a>
+    <a class="igbadge" href="https://www.instagram.com/555tzu/" target="_blank" rel="noopener" aria-label="Follow @555tzu on Instagram"><small>made with love by roxanne</small><span>@555tzu</span></a>
     <p class="eyebrow">Thanksgiving · 2026 🍂</p>
     <h1><span class="ink">A note of thanks</span></h1>
     <p class="sub">the people who show up for you deserve to actually hear it 🤍<br>pick a prompt, say the thing you never quite say out loud, and send it in an envelope they get to open ✉️</p>
@@ -248,7 +264,7 @@ header.top p.sub{font-size:calc(19px * var(--hand-k))}
       <button class="btn" id="dl2">Save image</button>
       <a class="btn primary" href="./">Make your own</a>
     </div>
-    <a class="byline" href="https://www.instagram.com/555tzu/" target="_blank" rel="noopener">made with ♡ by roxanne · @555tzu</a>
+    <a class="igbadge" href="https://www.instagram.com/555tzu/" target="_blank" rel="noopener" aria-label="Follow @555tzu on Instagram"><small>made with love by roxanne</small><span>@555tzu</span></a>
   </div>
 </div>
 
