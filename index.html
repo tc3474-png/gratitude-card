@@ -116,14 +116,13 @@ header.top .byline{opacity:0;animation:rise 1s .05s ease forwards}
 .tally.on{opacity:1}
 .tally b{font-family:var(--hand);font-style:var(--hand-st);font-weight:400;font-size:calc(24px * var(--hand-k));letter-spacing:0;color:var(--heart);text-transform:none;margin:0 4px}
 
-/* @555tzu: a small cream label with a thin double border, like an old printed card */
-.igbadge{display:inline-flex;align-items:baseline;gap:7px;padding:4px 12px 5px;margin:0 0 16px;background:#efe5d3;color:#2f2622;
-  border:1px solid #6b5248;outline:1px solid #6b5248;outline-offset:2px;border-radius:1px;text-decoration:none;
-  box-shadow:0 2px 6px rgba(0,0,0,.25);transition:transform .2s,box-shadow .2s}
-.igbadge small{font-size:calc(11px * var(--hand-k));color:#7a6258;line-height:1}
-.igbadge span{font-size:calc(13px * var(--hand-k));line-height:1;color:#3f63a8}
-.igbadge span::before{content:"❦ ";color:#a4685a}
-.igbadge:hover{transform:translateY(-1px) rotate(-1.5deg);box-shadow:0 4px 10px rgba(0,0,0,.3)}
+/* @555tzu: a medium vintage oval with a beaded border */
+.igbadge{display:inline-flex;flex-direction:column;align-items:center;padding:7px 26px 8px;margin:0 0 18px;
+  background:radial-gradient(ellipse at 50% 40%,#fbf3ee 0 55%,#f1d9d5 100%);border:1.5px solid #b87c68;border-radius:50%;
+  outline:2px dotted #c99383;outline-offset:3px;text-decoration:none;box-shadow:0 4px 12px rgba(0,0,0,.28);transition:transform .2s}
+.igbadge small{font-size:calc(11px * var(--hand-k));color:#9c6b5c;line-height:1.1}
+.igbadge span{font-size:calc(19px * var(--hand-k));line-height:1.1;color:#3f63a8}
+.igbadge:hover{transform:rotate(-3deg) scale(1.06)}
 header.top .igbadge{opacity:0;animation:rise 1s .05s ease forwards}
 #full .igbadge{margin:6px 0 0}
 
