@@ -116,6 +116,30 @@ header.top .byline{opacity:0;animation:rise 1s .05s ease forwards}
 .tally.on{opacity:1}
 .tally b{font-family:var(--hand);font-style:var(--hand-st);font-weight:400;font-size:calc(24px * var(--hand-k));letter-spacing:0;color:var(--heart);text-transform:none;margin:0 4px}
 
+/* every bit of text uses the handwriting picked in step iii */
+body,button,input,textarea,label,.btn,.eyebrow,.byline,.tally,.note,.count,.sty b,.fnt b,header.top p,.photoRow small,.toast,.env .toName small,.step h2 span{font-family:var(--hand)!important;font-style:var(--hand-st)!important;font-weight:400}
+label,.btn,.eyebrow,.tally,.sty b,.fnt b,.count,.toast,.env .toName small,.byline{text-transform:none;letter-spacing:.03em}
+label{font-size:calc(17px * var(--hand-k))}
+.btn{font-size:calc(19px * var(--hand-k));padding:11px 14px}
+header.top .eyebrow{font-size:calc(18px * var(--hand-k))!important;letter-spacing:.06em;text-transform:none}
+.byline{font-size:calc(16px * var(--hand-k))}
+header.top p.sub{font-size:calc(19px * var(--hand-k))}
+.note,.photoRow small{font-size:calc(15px * var(--hand-k))}
+.count{font-size:calc(14px * var(--hand-k))}
+.sty b{font-size:calc(16px * var(--hand-k))}
+.fnt b{font-size:calc(13px * var(--hand-k))}
+.toast{font-size:calc(17px * var(--hand-k))}
+.step h2 span{font-size:calc(16px * var(--hand-k))}
+/* the count: big, counts up, then keeps doing a little hop */
+.tally{font-size:calc(19px * var(--hand-k))!important}
+.tally b{display:inline-block;font-size:calc(46px * var(--hand-k))!important;line-height:1;vertical-align:-.12em;margin:0 6px;text-shadow:0 0 18px rgba(232,195,197,.45);animation:hop 2.4s 1.2s cubic-bezier(.3,1.5,.5,1) infinite}
+.tally .env-ico{display:inline-block;animation:wiggle 2.4s 1.2s ease-in-out infinite}
+.tally.bump b{animation:pop .6s cubic-bezier(.3,1.8,.5,1)}
+@keyframes hop{0%,55%,100%{transform:translateY(0) scale(1) rotate(0)}12%{transform:translateY(-14px) scale(1.18) rotate(-5deg)}24%{transform:translateY(0) scale(.94,1.06)}32%{transform:translateY(-4px) scale(1.04)}40%{transform:translateY(0) scale(1)}}
+@keyframes wiggle{0%,55%,100%{transform:rotate(0)}10%{transform:rotate(-14deg)}20%{transform:rotate(12deg)}30%{transform:rotate(-6deg)}}
+@keyframes pop{0%{transform:scale(.6)}60%{transform:scale(1.35)}100%{transform:scale(1)}}
+@media (prefers-reduced-motion:reduce){.tally b,.tally .env-ico{animation:none}}
+
 /* ---------- Receiver ---------- */
 #receiver{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;background:transparent;color:var(--ink)}
 .tapHint{margin-top:34px;text-align:center;animation:pulse 2.4s infinite}
@@ -527,9 +551,11 @@ const COUNTER="https://abacus.jasoncameron.dev", COUNT_KEY="gc555tzu/cards-sent"
 let shownCount=null;
 function showTally(n){
   const el=document.getElementById("tally"); if(!el)return;
-  const from=shownCount??n, t0=performance.now(); shownCount=n;
-  const tick=now=>{const k=Math.min(1,(now-t0)/900), v=Math.round(from+(n-from)*(1-Math.pow(1-k,3)));
-    el.innerHTML=n>0?`✉️ <b>${v.toLocaleString()}</b> ${v===1?"card has":"cards have"} been sent`:"✉️ be the first to send one";
+  const first=shownCount===null, changed=!first&&shownCount!==n;
+  const from=first?0:shownCount, t0=performance.now(), dur=first?1800:900; shownCount=n;
+  if(changed){el.classList.remove("bump");void el.offsetWidth;el.classList.add("bump")}
+  const tick=now=>{const k=Math.min(1,(now-t0)/dur), v=Math.round(from+(n-from)*(1-Math.pow(1-k,3)));
+    el.innerHTML=n>0?`<span class="env-ico">💌</span><b>${v.toLocaleString()}</b> ${v===1?"card has":"cards have"} been sent!`:"💌 be the first to send one";
     if(k<1)requestAnimationFrame(tick)};
   requestAnimationFrame(tick); el.classList.add("on");
 }
