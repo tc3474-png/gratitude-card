@@ -107,6 +107,15 @@ header.top p.sub{line-height:1.7;max-width:560px;margin-left:auto;margin-right:a
 @keyframes glitter{0%{opacity:0;transform:translate(0,0)}15%{opacity:.7}100%{opacity:0;transform:translate(var(--dx),190px)}}
 @media (prefers-reduced-motion:reduce){.ink,.eyebrow,.sub,.layout{animation:none;opacity:1;transform:none;clip-path:none}.flutter{display:none}}
 
+/* credit + live count */
+.byline{display:inline-block;font-size:11px;letter-spacing:.18em;color:var(--muted);text-decoration:none;margin-bottom:16px;border-bottom:1px solid transparent;transition:border-color .2s,color .2s}
+.byline:hover{color:var(--ink);border-color:var(--muted)}
+header.top .byline{opacity:0;animation:rise 1s .05s ease forwards}
+#full .byline{margin:4px 0 0}
+.tally{margin:20px 0 0;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);min-height:28px;opacity:0;transition:opacity .6s}
+.tally.on{opacity:1}
+.tally b{font-family:var(--hand);font-style:var(--hand-st);font-weight:400;font-size:calc(24px * var(--hand-k));letter-spacing:0;color:var(--heart);text-transform:none;margin:0 4px}
+
 /* ---------- Receiver ---------- */
 #receiver{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;background:transparent;color:var(--ink)}
 .tapHint{margin-top:34px;text-align:center;animation:pulse 2.4s infinite}
@@ -152,9 +161,11 @@ header.top p.sub{line-height:1.7;max-width:560px;margin-left:auto;margin-right:a
       <svg class="bf" style="--x:84%;--y:8%;--d:21s;--o:-6s" viewBox="-12 -10 24 20"><g class="wl"><path d="M0 0C-3-8-11-9-10-3C-9 1-4 1 0 0C-4 2-8 6-5 8C-2 9 0 4 0 0Z"/></g><g transform="scale(-1 1)"><g class="wl"><path d="M0 0C-3-8-11-9-10-3C-9 1-4 1 0 0C-4 2-8 6-5 8C-2 9 0 4 0 0Z"/></g></g><path d="M0-3V5"/></svg>
       <svg class="bf sm" style="--x:91%;--y:52%;--d:19s;--o:-11s" viewBox="-12 -10 24 20"><g class="wl"><path d="M0 0C-3-8-11-9-10-3C-9 1-4 1 0 0C-4 2-8 6-5 8C-2 9 0 4 0 0Z"/></g><g transform="scale(-1 1)"><g class="wl"><path d="M0 0C-3-8-11-9-10-3C-9 1-4 1 0 0C-4 2-8 6-5 8C-2 9 0 4 0 0Z"/></g></g><path d="M0-3V5"/></svg>
     </div>
+    <a class="byline" href="https://www.instagram.com/555tzu/" target="_blank" rel="noopener">by roxanne · @555tzu</a>
     <p class="eyebrow">Thanksgiving · 2026 🍂</p>
     <h1><span class="ink">A note of thanks</span></h1>
     <p class="sub">the people who show up for you deserve to actually hear it 🤍<br>pick a prompt, say the thing you never quite say out loud, and send it in an envelope they get to open ✉️</p>
+    <p class="tally" id="tally" aria-live="polite"></p>
   </header>
   <div class="layout">
     <div>
@@ -213,6 +224,7 @@ header.top p.sub{line-height:1.7;max-width:560px;margin-left:auto;margin-right:a
       <button class="btn" id="dl2">Save image</button>
       <a class="btn primary" href="./">Make your own</a>
     </div>
+    <a class="byline" href="https://www.instagram.com/555tzu/" target="_blank" rel="noopener">made with ♡ by roxanne · @555tzu</a>
   </div>
 </div>
 
@@ -251,9 +263,12 @@ const CJK='"LXGW WenKai TC"';
 const STYLES = {
   letter:    {name:"Letter",     photo:false, env:"#f7f4ef", envF:"#efe9e1", envD:"#ded6cb", pg:"#ece7df", seal:"#a40000"},
   typewriter:{name:"Typewriter", photo:false, env:"#fbf6f6", envF:"#f2e7e7", envD:"#e2d0d0", pg:"#eedfdf", seal:"#513030"},
-  unsent:    {name:"Unsent",     photo:false, env:"#ffffff", envF:"#f4f2ee", envD:"#e2ddd3", pg:"#e1dbcf", seal:"#ef6f88"},
   postcard:  {name:"Postcard",   photo:true,  env:"#a9cdec", envF:"#9cc3e6", envD:"#87b2d8", pg:"#d9d9d9", seal:"#a7a9ad"},
   slate:     {name:"Slate",      photo:false, env:"#f1efea", envF:"#e7e4dd", envD:"#d6d2c9", pg:"#4a4d4f", seal:"#222222", fx:"#e8e4dc", pgInk:"#f1efea"},
+  invite:    {name:"Invitation", photo:false, env:"#f7f3ee", envF:"#ede6de", envD:"#dcd2c6", pg:"#550814", seal:"#7a0000"},
+  meadow:    {name:"Meadow",     photo:false, env:"#f3eee6", envF:"#e9e2d7", envD:"#d8cfc1", pg:"#3d4a31", seal:"#4b432c"},
+  wreath:    {name:"Wreath",     photo:false, env:"#f6f1e6", envF:"#ece5d6", envD:"#ddd4c2", pg:"#e4ddca", seal:"#d4a39b"},
+  mailclub:  {name:"Mail Club",  photo:false, env:"#f2ece2", envF:"#e8e0d3", envD:"#d6ccbd", pg:"#1a1214", seal:"#c4749c"},
   painting:  {name:"Painting",   photo:false, env:"#f7f7f3", envF:"#ecebe4", envD:"#dad8ce", pg:"#6f6a5c", seal:"#524532", fx:"#efe9da", pgInk:"#f7f4ec"},
 };
 let INK="#1d1b19";
@@ -404,22 +419,6 @@ const LAYOUTS={
     ctx.font=`700 27px "Helvetica Neue", Arial, ${CJK}`;
     ctx.fillText("Happy Thanksgiving",540,1242);
   },
-  unsent(ctx,{msg,from,date,fk}){
-    const ink="#141414",gray="#8c8880";
-    ctx.fillStyle=ink;ctx.textAlign="left";ctx.font=`18px "DM Mono", ${CJK}`;
-    ctx.fillText("a letter — finally sent",72,84);
-    ctx.save();ctx.translate(177,200);ctx.rotate(-0.02);
-    ctx.fillStyle=gray;ctx.font=`16px "DM Mono", ${CJK}`;ctx.fillText(date.words,0,18);
-    ctx.fillStyle=ink;
-    let y=60;
-    const r=msgFit(ctx,msg,fk,720,520,34,18);
-    y=drawLines(ctx,r.lines,0,y+r.size*.3,r.lh)+14;
-    ctx.font=`34px "EB Garamond", ${CJK}`;ctx.fillText("Yours,",0,Math.min(y,640));
-    ctx.font=`italic 44px "EB Garamond", ${CJK}`;ctx.fillText(`— ${from||"me"}`,0,Math.min(y+54,694));
-    ctx.restore();
-    ctx.fillStyle=ink;ctx.font=`italic 80px "EB Garamond", ${CJK}`;ctx.fillText("sent, finally.",72,1190);
-    ctx.fillStyle=gray;ctx.font=`15px "DM Mono", ${CJK}`;ctx.fillText("1 / 1",880,1265);
-  },
   postcard(ctx,{msg,from,photo,fk}){
     // photo goes on the stamp-edged postcard, tucked behind the letter paper (paper top edge is y≈436)
     if(photo){ctx.save();ctx.beginPath();ctx.rect(0,0,1080,436);ctx.clip();ctx.translate(556,272);ctx.rotate(0.1);drawPhotoSlot(ctx,photo,600,290,"#fff");ctx.restore()}
@@ -434,6 +433,32 @@ const LAYOUTS={
     const r=msgFit(ctx,msg+(from?`\n\n— ${from}`:""),fk,330,380,28,14);
     drawLines(ctx,r.lines,540,462+r.size,r.lh);
   },
+  invite(ctx,{msg,from,fk}){
+    // white card tucked in the burgundy envelope; stay above the pocket's V
+    const c="#7a0000";ctx.fillStyle=c;ctx.textAlign="center";
+    const r=msgFit(ctx,msg,fk,540,190,30,13);
+    let y=drawLines(ctx,r.lines,540,505+r.size+Math.max(0,(190-r.lines.length*r.lh)/2),r.lh);
+    ctx.font=`500 17px Inter, ${CJK}`;ctx.letterSpacing="3px";ctx.fillText(("— "+(from||"with thanks")).toUpperCase(),540,Math.min(y+18,735));ctx.letterSpacing="0px";
+  },
+  meadow(ctx,{msg,from,fk}){
+    const c="#4b432c";ctx.fillStyle=c;ctx.textAlign="center";
+    const r=msgFit(ctx,msg+(from?`\n\n— ${from}`:""),fk,520,540,40,16);
+    drawLines(ctx,r.lines,512,445+r.size+Math.max(0,(540-r.lines.length*r.lh)/2),r.lh);
+  },
+  wreath(ctx,{msg,from,fk}){
+    // inside the pink floral oval
+    const c="#6f7d50";ctx.fillStyle=c;ctx.textAlign="center";
+    const r=msgFit(ctx,msg+(from?`\n\n— ${from}`:""),fk,370,540,36,14);
+    drawLines(ctx,r.lines,540,395+r.size+Math.max(0,(540-r.lines.length*r.lh)/2),r.lh);
+  },
+  mailclub(ctx,{msg,from,fk}){
+    ctx.textAlign="center";
+    ctx.fillStyle="#f4cbd8";ctx.font=`104px Italianno, ${CJK}`;ctx.fillText("Happy Thanksgiving",540,230);
+    ctx.fillStyle="#c4749c";ctx.font=`78px Italianno, ${CJK}`;ctx.fillText("Thank you",540,425);
+    ctx.fillStyle="#231a1d";
+    const r=msgFit(ctx,msg+(from?`\n\n— ${from}`:""),fk,470,520,28,13);
+    drawLines(ctx,r.lines,540,480+r.size,r.lh);
+  },
   painting(ctx,{msg,from,fk}){
     const c="#524532";ctx.fillStyle=c;ctx.textAlign="center";
     const r=msgFit(ctx,msg,fk,310,450,44,18);
@@ -443,6 +468,7 @@ const LAYOUTS={
 };
 // ---------- link encoding (lives in the #hash, never sent to a server) ----------
 const dec=s=>JSON.parse(decodeURIComponent(escape(atob(s.replace(/-/g,"+").replace(/_/g,"/")))));
+const STYLE_IDS=["letter","typewriter","unsent","postcard","slate","painting","invite","meadow","wreath","mailclub"];
 // Short links: the card is packed into a tiny array, the default opening line is left out
 // (the receiver rebuilds it), and the rest is compressed. Old "#c=" links still open.
 const b64u=bytes=>{let s="";for(const b of bytes)s+=String.fromCharCode(b);return btoa(s).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"")};
@@ -450,7 +476,7 @@ const unb64u=s=>Uint8Array.from(atob(s.replace(/-/g,"+").replace(/_/g,"/")),c=>c
 async function pack(d){
   const to=(d.to||"").trim(), h=header(d.p,to), msg=d.msg||"";
   const m=msg.trim()===h?"":msg.startsWith(h)?"+"+msg.slice(h.length):"="+msg;
-  const arr=[d.p,Object.keys(STYLES).indexOf(d.s),d.f?Object.keys(FONTS).indexOf(d.f):-1,d.to||"",d.from||"",d.t||ymd(),m];
+  const arr=[d.p,STYLE_IDS.indexOf(d.s),d.f?Object.keys(FONTS).indexOf(d.f):-1,d.to||"",d.from||"",d.t||ymd(),m];
   while(arr.length&&arr[arr.length-1]==="")arr.pop();
   const bytes=new TextEncoder().encode(JSON.stringify(arr));
   if(!window.CompressionStream)return "!"+b64u(bytes);
@@ -462,7 +488,7 @@ async function unpack(code){
   if(code[0]==="~")bytes=new Uint8Array(await new Response(new Blob([bytes]).stream().pipeThrough(new DecompressionStream("deflate-raw"))).arrayBuffer());
   const [p=0,si=0,fi=-1,to="",from="",t,m=""]=JSON.parse(new TextDecoder().decode(bytes));
   const h=header(p,to.trim()), msg=!m?h:m[0]==="+"?h+m.slice(1):m.slice(1);
-  return {p,s:Object.keys(STYLES)[si],f:fi>=0?Object.keys(FONTS)[fi]:null,to,from,t,msg};
+  return {p,s:STYLES[STYLE_IDS[si]]?STYLE_IDS[si]:"letter",f:fi>=0?Object.keys(FONTS)[fi]:null,to,from,t,msg};
 }
 let shareLink="";
 async function refreshLink(){shareLink=location.origin+location.pathname+"#"+await pack(withDate());return shareLink}
@@ -494,6 +520,26 @@ function heartBurst(el){
     h.style.left=(r.left+4)+"px";h.style.top=(r.top+12)+"px";h.style.setProperty("--dx",((Math.random()-.5)*44)+"px");
     h.style.animationDelay=(i*.06)+"s";h.style.fontSize=(9+Math.random()*8)+"px";
     document.body.appendChild(h);setTimeout(()=>h.remove(),1300)}
+}
+
+// Live count of cards made, kept by a free public counter (it only ever stores one number).
+const COUNTER="https://abacus.jasoncameron.dev", COUNT_KEY="gc555tzu/cards-sent";
+let shownCount=null;
+function showTally(n){
+  const el=document.getElementById("tally"); if(!el)return;
+  const from=shownCount??n, t0=performance.now(); shownCount=n;
+  const tick=now=>{const k=Math.min(1,(now-t0)/900), v=Math.round(from+(n-from)*(1-Math.pow(1-k,3)));
+    el.innerHTML=n>0?`✉️ <b>${v.toLocaleString()}</b> ${v===1?"card has":"cards have"} been sent`:"✉️ be the first to send one";
+    if(k<1)requestAnimationFrame(tick)};
+  requestAnimationFrame(tick); el.classList.add("on");
+}
+async function loadTally(){try{const j=await (await fetch(`${COUNTER}/get/${COUNT_KEY}`)).json();showTally(j.value||0)}catch{}}
+// count each card once, when it's sent or saved
+async function countCard(){
+  let seen=[];try{seen=JSON.parse(sessionStorage.getItem("counted")||"[]")}catch{}
+  const id=shareLink||String(Math.random()); if(seen.includes(id))return;
+  try{const j=await (await fetch(`${COUNTER}/hit/${COUNT_KEY}`)).json();showTally(j.value);
+    seen.push(id);sessionStorage.setItem("counted",JSON.stringify(seen))}catch{}
 }
 
 // ---------- maker ----------
@@ -535,9 +581,10 @@ function buildMaker(){
     const im=new Image(); im.onload=()=>{photo=im;rm.classList.remove("hidden");redraw()}; im.src=URL.createObjectURL(f);
   };
   rm.onclick=()=>{photo=null;rm.classList.add("hidden");document.getElementById("photo").value="";redraw()};
-  document.getElementById("dl").onclick=()=>saveImage(cv,"thank-you-card.png");
+  document.getElementById("dl").onclick=()=>{countCard();saveImage(cv,"thank-you-card.png")};
   document.getElementById("send").onclick=async()=>{
     const url=shareLink||await refreshLink();
+    countCard();
     // the message people paste or share starts with "{name} sent you a gratitude card!"
     const line=state.from.trim()?`${state.from.trim()} sent you a gratitude card! 💌`:"You received a gratitude card! 💌";
     if(isMobile&&navigator.share){try{await navigator.share({title:line,text:line,url});return}catch(e){if(e.name==="AbortError")return}}
@@ -545,6 +592,7 @@ function buildMaker(){
   };
   document.getElementById("try").onclick=async()=>{location.hash=await pack(withDate())};
   redraw();
+  loadTally(); setInterval(()=>{if(!document.hidden)loadTally()},20000);
 }
 
 // ---------- receiver ----------
