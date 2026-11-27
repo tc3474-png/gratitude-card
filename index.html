@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=DM+Mono:wght@300;400&family=EB+Garamond:ital,wght@0,400;1,400&family=Iansui&family=Inter:wght@300;400;500&family=Italianno&family=Kristi&family=Mansalva&family=LXGW+WenKai+TC:wght@400;700&family=Mrs+Saint+Delafield&family=Noto+Serif+TC:wght@400&family=Oregano:ital@0;1&family=Rouge+Script&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#4a0a18;--ink:#efe5da;--muted:#cfb2ae;--line:rgba(239,229,218,.2);--card:rgba(92,55,66,.32);--heart:#dfb3b4;--velvet:radial-gradient(120% 80% at 15% 0%,#5f1324 0%,rgba(95,19,36,0) 60%),radial-gradient(90% 70% at 100% 100%,#33050f 0%,rgba(51,5,15,0) 60%),#4a0a18;
+:root{--bg:#5b3a44;--ink:#f1e8de;--muted:#d6bdb9;--line:rgba(241,232,222,.22);--card:rgba(255,255,255,.06);--heart:#e8c3c5;--velvet:radial-gradient(120% 80% at 15% 0%,#6a4853 0%,rgba(106,72,83,0) 60%),radial-gradient(90% 70% at 100% 100%,#4c2f38 0%,rgba(76,47,56,0) 60%),#5b3a44;
   --serif:"Cormorant Garamond","Noto Serif TC",Georgia,serif;--sans:Inter,"Noto Serif TC",system-ui,sans-serif}
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--velvet);background-attachment:fixed;color:var(--ink);font-family:var(--sans);font-weight:300;-webkit-text-size-adjust:100%}
@@ -65,7 +65,7 @@ textarea{min-height:170px;resize:vertical;line-height:1.5;font-size:19px}
 .btn{border-radius:2px;padding:13px 14px;cursor:pointer;font-size:12px;letter-spacing:.18em;text-transform:uppercase;background:transparent;border:1px solid var(--ink);text-align:center;text-decoration:none;color:var(--ink);font-weight:400;transition:background .2s,color .2s}
 .btn:hover{background:var(--ink);color:var(--bg)}
 .btn.primary{background:var(--ink);color:var(--bg)}
-.btn.primary:hover{background:#dfb3b4}
+.btn.primary:hover{background:#e8c3c5}
 .btn.wide{grid-column:1/-1}
 .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--bg);padding:12px 20px;border-radius:2px;font-size:12px;letter-spacing:.16em;text-transform:uppercase;opacity:0;transition:.3s;pointer-events:none;z-index:99}
 .toast.show{opacity:1;transform:translateX(-50%)}
@@ -504,7 +504,7 @@ function buildMaker(){
   const fn=document.getElementById("fonts");
   const syncFonts=()=>{const cur=state.f||DEFAULT_FONT;fn.querySelectorAll(".fnt").forEach(b=>b.classList.toggle("on",b.dataset.k===cur));applyUIFont(cur)};
   Object.entries(FONTS).forEach(([k,F])=>{const b=document.createElement("button");b.className="fnt";b.dataset.k=k;
-    b.innerHTML=`<span><i style='font-style:${F.st||"normal"};font-family:${F.en.replace(/"/g,"")};font-weight:${F.w||400};font-size:${Math.round(22/F.k)}px'>Aa</i> <i style='font-style:normal;font-family:${F.zh.replace(/"/g,"")};font-size:22px'>謝</i></span><b>${F.label}</b>`;
+    b.innerHTML=`<span><i style='font-style:${F.st||"normal"};font-family:${F.en.replace(/"/g,"")};font-weight:${F.w||400};font-size:${Math.round(19/F.k)}px'>thanks</i> <i style='font-style:normal;font-family:${F.zh.replace(/"/g,"")};font-size:18px'>謝謝</i></span><b>${F.label}</b>`;
     b.onclick=()=>{state.f=k;syncFonts();redraw()};fn.appendChild(b)});
   syncFonts();
   ["to","msg","from"].forEach(id=>document.getElementById(id).addEventListener("input",e=>{state[id]=e.target.value;
@@ -545,7 +545,7 @@ async function showReceiver(d){
   const open=()=>{
     if(opened)return;opened=true;document.getElementById("hint").style.opacity=0;
     [["s1",0],["s2",350],["s3",1000],["s4",2500]].forEach(([c,t])=>setTimeout(()=>env.classList.add(c),t));
-    setTimeout(()=>{document.getElementById("full").classList.add("show");confetti("#dfb3b4")},2700);
+    setTimeout(()=>{document.getElementById("full").classList.add("show");confetti("#e8c3c5")},2700);
   };
   env.onclick=open; env.onkeydown=e=>{if(e.key==="Enter"||e.key===" ")open()};
 }
