@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Gratitude Card</title>
 <meta name="description" content="Make a Thanksgiving gratitude card for someone you care about.">
-<meta property="og:title" content="A thank-you card for you">
-<meta property="og:description" content="Tap to open 💌">
+<meta property="og:title" content="Someone sent you a gratitude card 💌">
+<meta property="og:description" content="Tap to open your envelope">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=DM+Mono:wght@300;400&family=EB+Garamond:ital,wght@0,400;1,400&family=Iansui&family=Inter:wght@300;400;500&family=Italianno&family=Kristi&family=Mansalva&family=LXGW+WenKai+TC:wght@400;700&family=Mrs+Saint+Delafield&family=Noto+Serif+TC:wght@400&family=Oregano:ital@0;1&family=Rouge+Script&display=swap" rel="stylesheet">
@@ -538,8 +538,10 @@ function buildMaker(){
   document.getElementById("dl").onclick=()=>saveImage(cv,"thank-you-card.png");
   document.getElementById("send").onclick=async()=>{
     const url=shareLink||await refreshLink();
-    if(isMobile&&navigator.share){try{await navigator.share({title:"A thank-you card for you",url});return}catch(e){if(e.name==="AbortError")return}}
-    try{await navigator.clipboard.writeText(url);toast("Link copied ✓")}catch{prompt("Copy this link:",url)}
+    // the message people paste or share starts with "{name} sent you a gratitude card!"
+    const line=`${state.from.trim()||"Someone"} sent you a gratitude card! 💌`;
+    if(isMobile&&navigator.share){try{await navigator.share({title:line,text:line,url});return}catch(e){if(e.name==="AbortError")return}}
+    try{await navigator.clipboard.writeText(line+"\n"+url);toast("Copied, ready to paste ✓")}catch{prompt("Copy this:",line+"\n"+url)}
   };
   document.getElementById("try").onclick=async()=>{location.hash=await pack(withDate())};
   redraw();
@@ -550,6 +552,7 @@ async function showReceiver(d){
   document.getElementById("maker").classList.add("hidden");
   const R=document.getElementById("receiver"), S=STYLES[d.s]||STYLES.letter, env=document.getElementById("env");
   applyUIFont(FONTS[d.f]?d.f:DEFAULT_FONT);
+  document.title=`${(d.from||"").trim()||"Someone"} sent you a gratitude card 💌`;
   R.classList.remove("hidden");
   Object.entries({"--pg":S.pg,"--env":S.env,"--envF":S.envF,"--envD":S.envD,"--seal":S.seal,"--pgInk":S.pgInk||"#1f1d1a"}).forEach(([k,v])=>R.style.setProperty(k,v));
   const r=rng(9);let p="";for(let i=0;i<=18;i++){const a=i/18*Math.PI*2,rad=29+(r()-.5)*5;p+=(i?"L":"M")+(Math.cos(a)*rad).toFixed(1)+" "+(Math.sin(a)*rad).toFixed(1)}
