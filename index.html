@@ -332,8 +332,10 @@ async function ensureFonts(text){
     '40px "EB Garamond"','italic 40px "EB Garamond"','40px "LXGW WenKai TC"','40px Iansui','italic 40px Oregano','40px Italianno','40px Mansalva'];
   await Promise.all(faces.map(f=>document.fonts.load(f,all).catch(()=>{})));
 }
-const today=()=>{const d=new Date();return {dots:`${String(d.getMonth()+1).padStart(2,"0")}.${String(d.getDate()).padStart(2,"0")}.${d.getFullYear()}`,
-  short:`${String(d.getMonth()+1).padStart(2,"0")}.${String(d.getDate()).padStart(2,"0")}`,words:d.toLocaleDateString("en-US",{day:"numeric",month:"long"}).toLowerCase()}};
+const today=(d=new Date())=>({dots:`${String(d.getMonth()+1).padStart(2,"0")}.${String(d.getDate()).padStart(2,"0")}.${d.getFullYear()}`,
+  short:`${String(d.getMonth()+1).padStart(2,"0")}.${String(d.getDate()).padStart(2,"0")}`,words:d.toLocaleDateString("en-US",{day:"numeric",month:"long"}).toLowerCase()});
+const ymd=(d=new Date())=>`${d.getFullYear()}${String(d.getMonth()+1).padStart(2,"0")}${String(d.getDate()).padStart(2,"0")}`;
+const fromYmd=t=>today(new Date(+t.slice(0,4),+t.slice(4,6)-1,+t.slice(6,8)));
 
 // Photo (cover-cropped) or a hand-drawn heart placeholder, centered at 0,0.
 function drawPhotoSlot(ctx,photo,pw,ph,fill){
@@ -353,7 +355,7 @@ function drawPhotoSlot(ctx,photo,pw,ph,fill){
 // ---------- the card ----------
 async function drawCard(cv,d,photo){
   const k=STYLES[d.s]?d.s:"letter";
-  const to=(d.to||"").trim(), from=(d.from||"").trim(), msg=(d.msg||"").trim()||header(d.p,to), date=d.t||today();
+  const to=(d.to||"").trim(), from=(d.from||"").trim(), msg=(d.msg||"").trim()||header(d.p,to), date=typeof d.t==="string"?fromYmd(d.t):(d.t||today());
   _seed=1;
   await ensureFonts(to+msg+from);
   const ctx=cv.getContext("2d"), W=1080;
@@ -440,9 +442,30 @@ const LAYOUTS={
   },
 };
 // ---------- link encoding (lives in the #hash, never sent to a server) ----------
-const enc=o=>btoa(unescape(encodeURIComponent(JSON.stringify(o)))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
 const dec=s=>JSON.parse(decodeURIComponent(escape(atob(s.replace(/-/g,"+").replace(/_/g,"/")))));
-const linkFor=d=>location.origin+location.pathname+"#c="+enc(d);
+// Short links: the card is packed into a tiny array, the default opening line is left out
+// (the receiver rebuilds it), and the rest is compressed. Old "#c=" links still open.
+const b64u=bytes=>{let s="";for(const b of bytes)s+=String.fromCharCode(b);return btoa(s).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"")};
+const unb64u=s=>Uint8Array.from(atob(s.replace(/-/g,"+").replace(/_/g,"/")),c=>c.charCodeAt(0));
+async function pack(d){
+  const to=(d.to||"").trim(), h=header(d.p,to), msg=d.msg||"";
+  const m=msg.trim()===h?"":msg.startsWith(h)?"+"+msg.slice(h.length):"="+msg;
+  const arr=[d.p,Object.keys(STYLES).indexOf(d.s),d.f?Object.keys(FONTS).indexOf(d.f):-1,d.to||"",d.from||"",d.t||ymd(),m];
+  while(arr.length&&arr[arr.length-1]==="")arr.pop();
+  const bytes=new TextEncoder().encode(JSON.stringify(arr));
+  if(!window.CompressionStream)return "!"+b64u(bytes);
+  const z=new Uint8Array(await new Response(new Blob([bytes]).stream().pipeThrough(new CompressionStream("deflate-raw"))).arrayBuffer());
+  return "~"+b64u(z);
+}
+async function unpack(code){
+  let bytes=unb64u(code.slice(1));
+  if(code[0]==="~")bytes=new Uint8Array(await new Response(new Blob([bytes]).stream().pipeThrough(new DecompressionStream("deflate-raw"))).arrayBuffer());
+  const [p=0,si=0,fi=-1,to="",from="",t,m=""]=JSON.parse(new TextDecoder().decode(bytes));
+  const h=header(p,to.trim()), msg=!m?h:m[0]==="+"?h+m.slice(1):m.slice(1);
+  return {p,s:Object.keys(STYLES)[si],f:fi>=0?Object.keys(FONTS)[fi]:null,to,from,t,msg};
+}
+let shareLink="";
+async function refreshLink(){shareLink=location.origin+location.pathname+"#"+await pack(withDate());return shareLink}
 const isMobile=/Mobi|Android|iPhone|iPad/.test(navigator.userAgent);
 
 function toast(t){const e=document.getElementById("toast");e.textContent=t;e.classList.add("show");clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove("show"),2400)}
@@ -477,8 +500,8 @@ function heartBurst(el){
 const state={p:0,to:"",msg:header(0,""),from:"",s:"letter",f:null};
 let photo=null;
 const cv=document.getElementById("cv");
-let tmr; const redraw=()=>{clearTimeout(tmr);tmr=setTimeout(()=>drawCard(cv,state,photo),120)};
-const withDate=()=>({...state,t:today()});
+let tmr; const redraw=()=>{clearTimeout(tmr);tmr=setTimeout(()=>{drawCard(cv,state,photo);refreshLink()},120)};
+const withDate=()=>({...state,t:ymd()});
 
 function buildMaker(){
   const pr=document.getElementById("prompts");
@@ -514,11 +537,11 @@ function buildMaker(){
   rm.onclick=()=>{photo=null;rm.classList.add("hidden");document.getElementById("photo").value="";redraw()};
   document.getElementById("dl").onclick=()=>saveImage(cv,"thank-you-card.png");
   document.getElementById("send").onclick=async()=>{
-    const url=linkFor(withDate());
+    const url=shareLink||await refreshLink();
     if(isMobile&&navigator.share){try{await navigator.share({title:"A thank-you card for you",url});return}catch(e){if(e.name==="AbortError")return}}
     try{await navigator.clipboard.writeText(url);toast("Link copied ✓")}catch{prompt("Copy this link:",url)}
   };
-  document.getElementById("try").onclick=()=>{location.hash="c="+enc(withDate())};
+  document.getElementById("try").onclick=async()=>{location.hash=await pack(withDate())};
   redraw();
 }
 
@@ -565,9 +588,11 @@ function confetti(color){
     e.style.cssText=`left:${4+Math.random()*92}%;width:${s}px;height:${s}px;--d:${7+Math.random()*7}s;--o:${-Math.random()*12}s;--dx:${(Math.random()-.5)*40}px`;
     fl.appendChild(e)}})();
 
-function route(){
-  const m=location.hash.match(/^#c=(.+)$/);
-  if(m){try{showReceiver(dec(m[1]));return}catch(e){}}
+async function route(){
+  const h=location.hash.slice(1);
+  if(/^[~!]/.test(h)){try{await showReceiver(await unpack(h));return}catch(e){}}
+  const m=h.match(/^c=(.+)$/);
+  if(m){try{await showReceiver(dec(m[1]));return}catch(e){}}
   if(location.hash)history.replaceState(null,"",location.pathname);
   buildMaker();
 }
